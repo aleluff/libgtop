@@ -26,15 +26,37 @@
 
 #include "glibtop_private.h"
 
+#include "../../nethogs/updates.cpp"
+
 static const unsigned long _glibtop_sysdeps_proc_net_io =
 (1L << GLIBTOP_PROC_NET_IO_BYTESIN) + (1L << GLIBTOP_PROC_NET_IO_BYTESOUT);
 
 /* Init function. */
 
 void
+onNethogsUpdate(int action, NethogsMonitorRecord const* update)
+{
+	Updates::setRowUpdate(action, *update);
+}
+
+void
+nethogsMonitorThreadProc()
+{
+	nethogs_status = nethogsmonitor_loop(&onNethogsUpdate);
+	Updates::setNetHogsMonitorStatus(nethogs_status);
+}
+
+void
 _glibtop_init_proc_net_io_s (glibtop *server)
 {
 	server->sysdeps.proc_io = _glibtop_sysdeps_proc_net_io;
+
+	//problem no device + test others system
+
+	std::thread nethogs_monitor_thread(&nethogsMonitorThreadProc);
+
+	nethogsmonitor_breakloop();
+	nethogs_monitor_thread.detach();
 }
 
 /* Provides detailed information about a process. */
@@ -42,30 +64,20 @@ _glibtop_init_proc_net_io_s (glibtop *server)
 void
 glibtop_get_proc_net_io_s (glibtop *server, glibtop_proc_net_io *buf, pid_t pid)
 {
-	char buffer [BUFSIZ], *p;
 	memset (buf, 0, sizeof (glibtop_proc_net_io));
 
-	/*
-	 * if (server->os_version_code < LINUX_VERSION_CODE(2, 6, 20))
-		return;
+	Updates::RowUpdatesMap updates = Updates::getRows();
 
-	if (proc_file_to_buffer(buffer, sizeof buffer, "/proc/%d/io", pid))
-		return;
+	for (const auto& update : updates)
+	{
+		if((int)update.second.record.pid != (int)pid ||
+			update.first != NETHOGS_APP_ACTION_SET)
+			continue;
 
-	p = skip_token (buffer);
-	buf->disk_rchar = g_ascii_strtoull (p, &p, 10);
-	p = skip_line (p);
-	p = skip_token (p);
-	buf->disk_wchar = g_ascii_strtoull (p, &p, 10);
-	p = skip_line (p);
-	p = skip_line (p);
-	p = skip_line (p);
-	p = skip_token (p);
-	buf->disk_rbytes = g_ascii_strtoull (p, &p, 10);
-	p = skip_line (p);
-	p = skip_token (p);
-	buf->disk_wbytes = g_ascii_strtoull (p, &p, 10);
-	*/
+		buf->bytes_out = update.second.record.sent_bytes;
+		buf->bytes_in = update.second.record.recv_bytes;
+		break;
+	}
 
 	buf->flags = _glibtop_sysdeps_proc_net_io;
 }
