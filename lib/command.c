@@ -69,6 +69,7 @@ glibtop_call_l (glibtop *server, unsigned command, size_t send_size,
 	  CHECK_CMND(GLIBTOP_CMND_PROC_WD);
 	  CHECK_CMND(GLIBTOP_CMND_PROC_AFFINITY);
 	  CHECK_CMND(GLIBTOP_CMND_PROC_IO);
+	  CHECK_CMND(GLIBTOP_CMND_PROC_NET_IO);
 	default:
 	  glibtop_error_r(server, "CALL: command UNKNOWN(%d) sending %lu bytes", command, (unsigned long)send_size); break;
 	}

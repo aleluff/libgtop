@@ -49,7 +49,8 @@ GLIBTOP_SUID_NETLIST +
 GLIBTOP_SUID_PROC_WD +
 GLIBTOP_SUID_PROC_AFFINITY +
 GLIBTOP_SUID_PPP +
-GLIBTOP_SUID_PROC_IO;
+GLIBTOP_SUID_PROC_IO +
+GLIBTOP_SUID_PROC_NET_IO;
 
 const _glibtop_init_func_t _glibtop_init_hook_s [] = {
 #if !GLIBTOP_SUID_CPU
@@ -123,6 +124,8 @@ const _glibtop_init_func_t _glibtop_init_hook_s [] = {
 #endif
 #if !GLIBTOP_SUID_PROC_IO
 	_glibtop_init_proc_io_s,
+#if !GLIBTOP_SUID_PROC_NET_IO
+	_glibtop_init_proc_net_io_s,
 #endif
 	NULL
 };
@@ -199,6 +202,8 @@ const _glibtop_init_func_t _glibtop_init_hook_p [] = {
 #endif
 #if GLIBTOP_SUID_PROC_IO
 	_glibtop_init_proc_io_p,
+#if GLIBTOP_SUID_PROC_IO
+	_glibtop_init_proc_net_io_p,
 #endif
 	NULL
 };

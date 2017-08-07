@@ -71,6 +71,7 @@ examples/sysdeps
 examples/timings
 examples/wd
 examples/diskio
+examples/netio
 gtk-doc.make
 install-sh
 lib/GTop-2.0.gir

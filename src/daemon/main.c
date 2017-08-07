@@ -221,10 +221,15 @@ handle_parent_connection (int s)
 	    do_output (s, resp, _offset_data (fsusage),
 		       0, NULL);
 	    break;
-    case GLIBTOP_CMND_PROC_IO:
+    	case GLIBTOP_CMND_PROC_IO:
 	    glibtop_get_proc_io_l
 		(server, &resp->u.data.proc_io, parameter);
 	    do_output (s, resp, _offset_data (proc_io),
+		       0, NULL);
+	case GLIBTOP_CMND_PROC_NET_IO:
+	    glibtop_get_proc_io_l
+		(server, &resp->u.data.proc_net_io, parameter);
+	    do_output (s, resp, _offset_data (proc_net_io),
 		       0, NULL);
 	    break;
 	case GLIBTOP_CMND_PPP:
