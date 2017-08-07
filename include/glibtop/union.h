@@ -87,7 +87,7 @@ union _glibtop_union
 	glibtop_proc_wd		proc_wd;
 	glibtop_proc_affinity	proc_affinity;
 	glibtop_proc_io		proc_io;
-	glibtop_net_io		proc_net_io;
+	glibtop_proc_net_io	proc_net_io;
 };
 
 G_END_DECLS

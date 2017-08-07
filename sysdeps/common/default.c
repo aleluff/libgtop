@@ -446,3 +446,18 @@ glibtop_get_proc_io(glibtop_proc_io *buf, pid_t pid)
 {
 	return glibtop_get_proc_io_l(glibtop_global_server, buf, pid);
 }
+
+/**
+ * glibtop_get_proc_net_io: Get the network bandwidth stats for the given pid
+ * @buf: Buffer where the result will be given
+ * @pid: Process id to get the bandwidth stats for
+ *
+ * Get the network bandwidth stats for a process
+ *
+ * Returns: A list of processor ID of 'buf.number' elements.
+ */
+void
+glibtop_get_proc_net_io(glibtop_proc_net_io *buf, pid_t pid)
+{
+	return glibtop_get_proc_net_io_l(glibtop_global_server, buf, pid);
+}

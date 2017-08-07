@@ -3,37 +3,36 @@
 #endif
 
 #include <glibtop.h>
-#include <glibtop/procio.h>
+#include <glibtop/procnetio.h>
 
 #include <stdlib.h>
 
 #include <unistd.h>
 
-static void show_diskio(pid_t pid)
+static void show_netio(pid_t pid)
 {
-  glibtop_proc_io io;
+	glibtop_proc_net_io io;
 
-  glibtop_get_proc_io (&io, pid);
+	glibtop_get_proc_net_io (&io, pid);
 
-  printf("<%ld>\t", (long)pid);
+	printf("<%ld>\t", (long)pid);
 
-  printf("flags: %08lx disk_rchar : %lu, disk_wchar : %lu, disk_read_bytes : %lu, disk_write_bytes : %lu\n", (unsigned long)io.flags, io.disk_rchar, io.disk_wchar, io.disk_rbytes, io.disk_wbytes);
-
+	printf("flags: %08lx bytes in : %lu, bytes out : %lu\n", (unsigned long)io.flags, io.bytes_in, io.bytes_out);
 }
 
 
 int main(int argc, char **argv)
 {
-  glibtop_init();
+	glibtop_init();
 
-  while(*++argv)
-    {
-      pid_t pid = strtol(*argv, NULL, 10);
-      show_diskio(pid);
-    }
+	while(*++argv)
+	{
+		pid_t pid = strtol(*argv, NULL, 10);
+		show_netio(pid);
+	}
 
-  glibtop_close();
+	glibtop_close();
 
-  return 0;
+	return 0;
 }
 

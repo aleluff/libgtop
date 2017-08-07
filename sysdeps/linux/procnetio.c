@@ -22,31 +22,31 @@
 #include <config.h>
 #include <glibtop.h>
 #include <glibtop/error.h>
-#include <glibtop/procio.h>
+#include <glibtop/procnetio.h>
 
 #include "glibtop_private.h"
 
-static const unsigned long _glibtop_sysdeps_proc_io =
-(1L << GLIBTOP_PROC_IO_DISK_RCHAR) + (1L << GLIBTOP_PROC_IO_DISK_WCHAR) +
-(1L << GLIBTOP_PROC_IO_DISK_RBYTES) + (1L << GLIBTOP_PROC_IO_DISK_WBYTES);
+static const unsigned long _glibtop_sysdeps_proc_net_io =
+(1L << GLIBTOP_PROC_NET_IO_BYTESIN) + (1L << GLIBTOP_PROC_NET_IO_BYTESOUT);
 
 /* Init function. */
 
 void
-_glibtop_init_proc_io_s (glibtop *server)
+_glibtop_init_proc_net_io_s (glibtop *server)
 {
-	server->sysdeps.proc_io = _glibtop_sysdeps_proc_io;
+	server->sysdeps.proc_io = _glibtop_sysdeps_proc_net_io;
 }
 
 /* Provides detailed information about a process. */
 
 void
-glibtop_get_proc_io_s (glibtop *server, glibtop_proc_io *buf, pid_t pid)
+glibtop_get_proc_net_io_s (glibtop *server, glibtop_proc_net_io *buf, pid_t pid)
 {
 	char buffer [BUFSIZ], *p;
-	memset (buf, 0, sizeof (glibtop_proc_io));
+	memset (buf, 0, sizeof (glibtop_proc_net_io));
 
-	if (server->os_version_code < LINUX_VERSION_CODE(2, 6, 20))
+	/*
+	 * if (server->os_version_code < LINUX_VERSION_CODE(2, 6, 20))
 		return;
 
 	if (proc_file_to_buffer(buffer, sizeof buffer, "/proc/%d/io", pid))
@@ -65,6 +65,7 @@ glibtop_get_proc_io_s (glibtop *server, glibtop_proc_io *buf, pid_t pid)
 	p = skip_line (p);
 	p = skip_token (p);
 	buf->disk_wbytes = g_ascii_strtoull (p, &p, 10);
+	*/
 
-	buf->flags = _glibtop_sysdeps_proc_io;
+	buf->flags = _glibtop_sysdeps_proc_net_io;
 }
